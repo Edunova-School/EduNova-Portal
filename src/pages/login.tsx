@@ -3,6 +3,7 @@ import { Link } from "react-router-dom"
 import { Eye, EyeOff, IdCard, ChevronDown, Lock, ArrowLeft, GraduationCap, BookOpen, Globe, Laptop, Award, ArrowRight } from "lucide-react"
 import logo from '../assets/edunova-logo.webp'
 import campus from '../assets/gate.webp'
+import { login } from "../lib/api"
 
 const studentTypes = [
   { code: 'UG', label: 'Undergraduate' },
@@ -128,53 +129,128 @@ function IdInput({ onChange, error, onBlur }: { value: string; onChange: (val: s
 
 export default function Login() {
   const [showPassword, setShowPassword] = useState(false)
-  const [form, setForm] = useState({ id: '', password: '' })
-  const [remember, setRemember] = useState(false)
-  const [errors, setErrors] = useState<{ id?: string; password?: string }>({})
+const [loginMethod, setLoginMethod] = useState<"email" | "id">("email")
+const [loading, setLoading] = useState(false)
+const [submitError, setSubmitError] = useState("")
+const [form, setForm] = useState({
+  email: "",
+  id: "",
+  password: "",
+})
+const [remember, setRemember] = useState(false)
+const [errors, setErrors] = useState<{
+  email?: string
+  id?: string
+  password?: string
+}>({})
 
  const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     setForm({ ...form, [e.target.name]: e.target.value })
   }
   const validate = () => {
-    const newErrors: { id?: string; password?: string } = {}
+  const newErrors: {
+    email?: string
+    id?: string
+    password?: string
+  } = {}
 
+  if (loginMethod === "email") {
+    if (!form.email.trim()) {
+      newErrors.email = "Please enter your email address."
+    } else if (
+      !/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(form.email.trim())
+    ) {
+      newErrors.email = "Please enter a valid email address."
+    }
+  }
+
+  if (loginMethod === "id") {
     if (!form.id.trim()) {
-      newErrors.id = 'Please enter your Staff or Student ID.'
-    } else if (form.id.split('/').length < 4) {
-      newErrors.id = 'ID looks incomplete. Please fill in the year and number.'
+      newErrors.id = "Please enter your Staff or Student ID."
+    } else if (form.id.split("/").length < 4) {
+      newErrors.id =
+        "ID looks incomplete. Please fill in the year and number."
     }
-
-    if (!form.password.trim()) {
-      newErrors.password = 'Please enter your password.'
-    } else if (form.password.length < 6) {
-      newErrors.password = 'Password must be at least 6 characters.'
-    }
-
-    setErrors(newErrors)
-    return Object.keys(newErrors).length === 0
-  } 
-  const validateField = (name: 'id' | 'password', value: string) => {
-  let message = ''
-
-  if (name === 'id') {
-    if (!value.trim()) message = 'Please enter your Staff or Student ID.'
-    else if (value.split('/').length < 4) message = 'ID looks incomplete. Please fill in the year and number.'
   }
 
-  if (name === 'password') {
-    if (!value.trim()) message = 'Please enter your password.'
-    else if (value.length < 6) message = 'Password must be at least 6 characters.'
+  if (!form.password.trim()) {
+    newErrors.password = "Please enter your password."
+  } else if (form.password.length < 6) {
+    newErrors.password =
+      "Password must be at least 6 characters."
   }
 
-  setErrors((prev) => ({ ...prev, [name]: message || undefined }))
+  setErrors(newErrors)
+
+  return Object.keys(newErrors).length === 0
 }
-  const handleSubmit = (e: React.FormEvent) => {
-    e.preventDefault()
-    const isValid = validate()
-    if (!isValid) return
+ const validateField = (
+  name: "email" | "id" | "password",
+  value: string
+) => {
+  let message = ""
 
-    console.log(form, remember)
+  if (name === "email") {
+    if (!value.trim()) {
+      message = "Please enter your email address."
+    } else if (
+      !/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(value.trim())
+    ) {
+      message = "Please enter a valid email address."
+    }
   }
+
+  if (name === "id") {
+    if (!value.trim()) {
+      message = "Please enter your Staff or Student ID."
+    } else if (value.split("/").length < 4) {
+      message =
+        "ID looks incomplete. Please fill in the year and number."
+    }
+  }
+
+  if (name === "password") {
+    if (!value.trim()) {
+      message = "Please enter your password."
+    } else if (value.length < 6) {
+      message =
+        "Password must be at least 6 characters."
+    }
+  }
+
+  setErrors((prev) => ({
+    ...prev,
+    [name]: message || undefined,
+  }))
+}
+const handleSubmit = async (e: React.FormEvent) => {
+  e.preventDefault()
+
+  if (!validate()) return
+
+  try {
+    setLoading(true)
+    setSubmitError("")
+
+    await login(
+      form.email.trim(),
+      form.password
+    )
+
+    // Change this to your actual portal route
+    window.location.href = "/dashboard"
+  } catch (error) {
+    console.error("Login failed:", error)
+
+    setSubmitError(
+      error instanceof Error
+        ? error.message
+        : "Unable to sign in. Please try again."
+    )
+  } finally {
+    setLoading(false)
+  }
+}
 
   return (
     <div className='min-h-screen flex'>
@@ -207,10 +283,96 @@ export default function Login() {
           </a>
 
           <h1 className='font-serif text-3xl md:text-4xl font-semibold text-[#14263F] mt-3 mb-2'>Sign In</h1>
-          <p className='font-sans text-black/55 text-sm mb-8'>Enter your credentials to access your portal.</p>
+          <p className="font-sans text-black/55 text-sm mb-8">
+  Sign in with your email address or Staff / Student ID.
+</p>
 
           <form onSubmit={handleSubmit} className='flex flex-col gap-5'>
-            <IdInput value={form.id} onChange={(val) => setForm({ ...form, id: val })} error={errors.id} onBlur={(val) => validateField('id', val)}/>
+            <div className="flex flex-col gap-3">
+  <div className="flex bg-black/5 rounded-xl p-1">
+    <button
+      type="button"
+      onClick={() => {
+        setLoginMethod("email")
+        setErrors({})
+      }}
+      className={`flex-1 text-sm py-2.5 rounded-lg transition-all ${
+        loginMethod === "email"
+          ? "bg-white text-[#1E3A8A] shadow-sm font-medium"
+          : "text-black/50"
+      }`}
+    >
+      Email
+    </button>
+
+    <button
+      type="button"
+      onClick={() => {
+        setLoginMethod("id")
+        setErrors({})
+      }}
+      className={`flex-1 text-sm py-2.5 rounded-lg transition-all ${
+        loginMethod === "id"
+          ? "bg-white text-[#1E3A8A] shadow-sm font-medium"
+          : "text-black/50"
+      }`}
+    >
+      Staff / Student ID
+    </button>
+  </div>
+
+  {loginMethod === "email" ? (
+    <div className="flex flex-col gap-2">
+      <label
+        htmlFor="email"
+        className="font-mono text-xs tracking-wide uppercase text-black/50"
+      >
+        Email Address
+      </label>
+
+      <div
+        className={`relative flex items-center border rounded-lg transition-colors ${
+          errors.email
+            ? "border-red-400 focus-within:border-red-500"
+            : "border-black/15 focus-within:border-[#1E3A8A]"
+        }`}
+      >
+        <input
+          id="email"
+          name="email"
+          type="email"
+          value={form.email}
+          onChange={handleChange}
+          onBlur={(e) =>
+            validateField("email", e.target.value)
+          }
+          placeholder="you@example.com"
+          className="w-full py-3 px-4 text-sm font-sans focus:outline-none rounded-lg"
+        />
+      </div>
+
+      {errors.email && (
+        <p className="text-xs text-red-500 pl-1">
+          {errors.email}
+        </p>
+      )}
+    </div>
+  ) : (
+    <IdInput
+      value={form.id}
+      onChange={(val) =>
+        setForm((prev) => ({
+          ...prev,
+          id: val,
+        }))
+      }
+      error={errors.id}
+      onBlur={(val) =>
+        validateField("id", val)
+      }
+    />
+  )}
+</div>
           <div className='flex flex-col gap-2'>
           <div className='flex items-center justify-between'>
             <label htmlFor='password' className='font-mono text-xs tracking-wide uppercase text-black/50'>Password</label>
@@ -231,9 +393,18 @@ export default function Login() {
               <input type='checkbox' checked={remember} onChange={() => setRemember(!remember)} className='w-4 h-4 rounded border-black/20 accent-[#1E3A8A]'/>
               <span className='text-sm text-black/60'>Keep me signed in</span>
             </label>
-            <button type='submit' className='bg-[#14263F] text-[#F6F6F2] py-3.5 rounded-lg font-semibold text-sm mt-2 transition-all duration-300 ease-out hover:-translate-y-[2px] hover:shadow-md'>
-              Sign In
-            </button>
+            {submitError && (
+  <div className="rounded-lg border border-red-200 bg-red-50 px-4 py-3 text-sm text-red-600">
+    {submitError}
+  </div>
+)}
+            <button
+  type="submit"
+  disabled={loading}
+  className="bg-[#14263F] text-[#F6F6F2] py-3.5 rounded-lg font-semibold text-sm mt-2 transition-all duration-300 ease-out hover:-translate-y-[2px] hover:shadow-md disabled:opacity-50 disabled:cursor-not-allowed disabled:hover:translate-y-0"
+>
+  {loading ? "Signing In..." : "Sign In"}
+</button>
           </form>
         </div>
       </div>
