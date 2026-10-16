@@ -19,7 +19,7 @@ const registrationTypes = [
     icon: GraduationCap,
     description: 'Begin your bachelor\'s degree journey across our range of faculties.',
     path: '/register/undergraduate',
-  },
+  },  
   {
     pathway: 'Postgraduate',
     icon: BookOpen,

@@ -187,9 +187,6 @@ export const registerStudentCourses = (
     method: "GET",
   });
   
-interface RegisterStudentCoursePayload {
-  course_id: string | number;
-}
 
 // GET /api/v1/students/courses
 export const getStudentCourses = () =>
@@ -198,10 +195,27 @@ export const getStudentCourses = () =>
   });
 
 // GET /api/v1/students/courses/available
-export const getAvailableStudentCourses = () =>
-  apiFetch("/students/courses/available", {
-    method: "GET",
-  });
+export const getAvailableStudentCourses = (search = "") => {
+  const query = search.trim();
+
+  const params = new URLSearchParams();
+
+  if (query) {
+    params.set("search", query);
+  }
+
+  const queryString = params.toString();
+
+  return apiFetch(
+    `/students/courses/available${queryString ? `?${queryString}` : ""}`,
+    {
+      method: "GET",
+    }
+  );
+};
+interface RegisterStudentCoursePayload {
+  course_offering_ids: (string | number)[];
+}
 
 // POST /api/v1/students/courses/register
 export const registerStudentCourse = (
@@ -217,10 +231,42 @@ export const dropStudentCourse = (
   registrationId: string | number
 ) =>
   apiFetch(
-    `/students/courses/${encodeURIComponent(String(registrationId))}/drop`,
+    `/students/courses/registrations/${encodeURIComponent(String(registrationId))}/drop`,
     {
       method: "PATCH",
     }
   );
 
 // GET /api/v1/students/dashboard
+
+export interface ProgramChangePayload {
+  faculty_id: string | number;
+  department_id: string | number;
+  programme_id: string | number;
+  reason: string;
+  // Add any other fields required by the backend.
+}
+
+export const getProgramChangeData = () =>
+  apiFetch("/students/programme-change", {
+    method: "GET",
+  });
+
+export const submitProgramChangeRequest = (payload: {
+  requested_programme_id: string | number;
+  reason: string;
+}) =>
+  apiFetch("/students/programme-change", {
+    method: "POST",
+    body: JSON.stringify(payload),
+  });
+
+export const getProgramChangeRequest = (
+  requestId: string | number
+) =>
+  apiFetch(
+    `/students/programme-change/${encodeURIComponent(String(requestId))}`,
+    {
+      method: "GET",
+    }
+  );
