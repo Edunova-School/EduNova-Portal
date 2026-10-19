@@ -7,6 +7,7 @@ import Results from "./pages/result";
 import RateLecturer from "./pages/rateLecturer";
 import Fees from "./pages/fees";
 import ProtectedRoute from "./components/ProtectedRoute";
+import StaffDashboard from "./pages/staff/StaffDashboard";
 
 function App() {
   return (
@@ -20,6 +21,7 @@ function App() {
         <Route path="/dashboard/results" element={<Results />} />
         <Route path="/dashboard/rate-lecturer" element={<RateLecturer />} />
         <Route path="/dashboard/fees" element={<Fees />} />
+        <Route path="/staff/dashboard" element={<StaffDashboard/>}></Route>
       </Route>
     </Routes>
   );

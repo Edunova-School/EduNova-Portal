@@ -1,7 +1,7 @@
 import { FileDown } from "lucide-react";
 import jsPDF from "jspdf";
 import autoTable from "jspdf-autotable";
-import logo from '../assets/edunova-logo.webp'
+// import logo from '../assets/edunova-logo.webp'
 import { useCallback, useEffect, useMemo, useState } from "react";
 import {
   Search,
@@ -520,8 +520,8 @@ const maximumUnits = readLimit(
 
   const projectedUnits = totalUnits + pendingAdditionUnits - pendingDropUnits;
 
-  const unitsRemaining =
-    maximumUnits !== null ? Math.max(0, maximumUnits - totalUnits) : null;
+  // const unitsRemaining =
+  //   maximumUnits !== null ? Math.max(0, maximumUnits - totalUnits) : null;
 
   const coreCount = registeredCourses.filter((course) =>
     /core|compulsory/i.test(getCourseType(course))

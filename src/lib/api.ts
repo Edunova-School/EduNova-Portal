@@ -146,9 +146,15 @@ async function apiFetch(
 }
 export async function login(
   email: string,
-  password: string
+  password: string,
+  role: "student" | "staff"
 ) {
-  const data = await apiFetch("/students/login", {
+  const endpoint =
+    role === "staff"
+      ? "/staff/login"
+      : "/students/login";
+
+  const data = await apiFetch(endpoint, {
     method: "POST",
     body: JSON.stringify({ email, password }),
     auth: false,
