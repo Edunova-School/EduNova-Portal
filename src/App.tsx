@@ -8,7 +8,9 @@ import RateLecturer from "./pages/rateLecturer";
 import Fees from "./pages/fees";
 import ProtectedRoute from "./components/ProtectedRoute";
 import StaffDashboard from "./pages/staff/StaffDashboard";
-
+import StaffCourses from "./pages/staff/StaffCourses"
+import StaffTimetable from "./pages/staff/StaffTimetable";
+import StaffAttendance from "./pages/staff/StaffAttendance";
 function App() {
   return (
     <Routes>
@@ -22,6 +24,9 @@ function App() {
         <Route path="/dashboard/rate-lecturer" element={<RateLecturer />} />
         <Route path="/dashboard/fees" element={<Fees />} />
         <Route path="/staff/dashboard" element={<StaffDashboard/>}></Route>
+        <Route path="staff/courses" element={<StaffCourses/>}></Route>
+        <Route path="staff/timetable" element={<StaffTimetable/>}></Route>
+        <Route path="staff/attendance" element={<StaffAttendance/>}></Route>
       </Route>
     </Routes>
   );

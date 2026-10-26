@@ -13,7 +13,7 @@ import {
 } from 'lucide-react'
 import { useLocation, Link, useNavigate } from 'react-router-dom'
 import { useState } from 'react'
-
+import { logout } from '../lib/api'
 const barLists = [
   { list: 'Dashboard', path: '/dashboard', icon: Home },
   { list: 'Course Management', path: '/dashboard/courses', icon: BookOpen },
@@ -34,9 +34,22 @@ export default function Sidebar({ onClose }: SidebarProps) {
   const navigate = useNavigate()
   const [confirmingLogout, setConfirmingLogout] = useState(false)
 
-  const handleLogout = () => {
-    navigate('/login')
+  const [loggingOut, setLoggingOut] = useState(false)
+
+const handleLogout = async () => {
+  if (loggingOut) return
+
+  setLoggingOut(true)
+
+  try {
+    await logout()
+  } catch (error) {
+    console.error('Logout request failed:', error)
+  } finally {
+    setConfirmingLogout(false)
+    navigate('/', { replace: true })
   }
+}
 
   return (
     <div className='bg-white h-screen w-72 flex flex-col shadow-2xl'>
