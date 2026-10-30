@@ -166,58 +166,46 @@ export default function Login() {
     return Object.keys(nextErrors).length === 0;
   };
 
-  const handleSubmit = async (event: FormEvent<HTMLFormElement>) => {
-    event.preventDefault();
-    setSubmitError("");
 
-    if (!validateForm()) return;
+const handleSubmit = async (event: FormEvent<HTMLFormElement>) => {
+  event.preventDefault();
+  setSubmitError("");
 
-    /*
-     * Your current API helper authenticates with email and password only.
-     * Do not send an ID as if it were an email address.
-     */
-    if (loginMethod === "id") {
-      setSubmitError(
-        "ID login is not connected yet. Please use email login until the ID authentication endpoint is configured."
-      );
-      return;
+  if (!validateForm()) return;
+
+  if (loginMethod === "id") {
+    setSubmitError(
+      "ID login is not connected yet. Please use email login until the ID authentication endpoint is configured."
+    );
+    return;
+  }
+
+  try {
+    setLoading(true);
+
+    await login(
+      form.email.trim().toLowerCase(),
+      form.password,
+      role
+    );
+
+    // Navigate based on the account type selected at login.
+    if (role === "staff") {
+      navigate("/staff/dashboard", { replace: true });
+    } else {
+      navigate("/dashboard", { replace: true });
     }
+  } catch (error) {
+    setSubmitError(
+      error instanceof Error
+        ? error.message
+        : "Unable to sign in. Please check your credentials and try again."
+    );
+  } finally {
+    setLoading(false);
+  }
+};
 
-    try {
-      setLoading(true);
-      const response = await login(
-        form.email.trim().toLowerCase(),
-        form.password,
-        role
-      );
-      const data = response?.data ?? response;
-      const accountRole = String(
-        data?.user?.role ??
-          data?.user?.user_type ??
-          data?.role ??
-          data?.user_type ??
-          ""
-      ).toUpperCase();
-      if (accountRole.includes("SUPER_ADMIN")) {
-        navigate("/superadmin/dashboard");
-      } else if (
-        accountRole.includes("STAFF") ||
-        accountRole.includes("LECTURER")
-      ) {
-        navigate("/staff/dashboard");
-      } else {
-        navigate("/dashboard");
-      }
-    } catch (error) {
-      setSubmitError(
-        error instanceof Error
-          ? error.message
-          : "Unable to sign in. Please check your credentials and try again."
-      );
-    } finally {
-      setLoading(false);
-    }
-  };
 
   return (
     <div className="flex min-h-screen items-center justify-center bg-slate-50 px-4 py-10">

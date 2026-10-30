@@ -1074,7 +1074,7 @@ await registerStudentCourse({
       <main className="min-h-screen min-w-0 flex-1 bg-[#F6F6F2]">
         <Header />
 
-        <div className="mx-auto flex max-w-6xl flex-col gap-6 px-4 py-8 md:px-8">
+        <div className="mx-auto flex max-w-6xl flex-col gap-6 px-4 py-4 md:px-8">
           <div className="flex flex-wrap items-start justify-between gap-4">
             <div>
               <span className="font-mono text-xs uppercase tracking-[0.2em] text-black/40">
@@ -1145,7 +1145,7 @@ await registerStudentCourse({
               return (
                 <div
                   key={card.label}
-                  className="flex items-center gap-4 rounded-2xl border border-black/5 bg-white p-5"
+                  className="flex items-center gap-2 md:gap-4 lg:gap-4 rounded-2xl border border-black/5 bg-white p-3 md:p-5 lg:p-5"
                 >
                   <div className="flex h-11 w-11 shrink-0 items-center justify-center rounded-full bg-[#1E3A8A]/5">
                     <Icon
@@ -1154,9 +1154,8 @@ await registerStudentCourse({
                       className="text-[#1E3A8A]"
                     />
                   </div>
-
                   <div>
-                    <p className="font-serif text-xl font-semibold leading-none text-black">
+                    <p className="font-serif text-lg md:text-xl font-semibold leading-none text-black">
                       {card.value}
                     </p>
                     <p className="mt-1.5 text-xs text-black/50">
@@ -1472,7 +1471,7 @@ await registerStudentCourse({
             )}
           </section>
 
-          {/* Registered courses */}
+
           <section className="rounded-2xl border border-black/5 bg-white p-5">
             <div className="flex flex-wrap items-center justify-between gap-3">
               <div>
@@ -1622,7 +1621,7 @@ await registerStudentCourse({
                 Credit Summary
               </h2>
 
-              <div className="mb-3 flex justify-between text-sm">
+              <div className="mb-1 md:mb-3 lg:mb-3  flex justify-between text-sm">
                 <span className="text-black/55">Registered courses</span>
                 <span className="font-medium">{registeredCourses.length}</span>
               </div>
