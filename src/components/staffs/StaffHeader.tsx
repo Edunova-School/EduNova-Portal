@@ -1,13 +1,27 @@
+<<<<<<< HEAD
 import { useEffect, useState } from "react";
 import { useNavigate } from "react-router-dom";
 import {
   Menu,
+=======
+import { useState } from "react";
+import { useNavigate } from "react-router-dom";
+import {
+  Menu,
+  DownloadIcon,
+  SettingsIcon,
+>>>>>>> origin/main
   HelpCircle,
   KeyRound,
   UserRound,
 } from "lucide-react";
+<<<<<<< HEAD
 import StaffSidebar from "./StaffSidebar";
 import { getStaffDashboard } from "../../lib/api";
+=======
+
+import StaffSidebar from "./StaffSidebar";
+>>>>>>> origin/main
 
 interface StaffHeaderProps {
   staffName?: string;
@@ -15,6 +29,7 @@ interface StaffHeaderProps {
   onLogout?: () => Promise<void> | void;
 }
 
+<<<<<<< HEAD
 interface StaffProfile {
   id?: string;
   full_name?: string;
@@ -30,11 +45,17 @@ interface StaffProfile {
 export default function StaffHeader({
   staffName: initialName,
   staffRole: initialRole,
+=======
+export default function StaffHeader({
+  staffName = "Staff Member",
+  staffRole = "Lecturer",
+>>>>>>> origin/main
   onLogout,
 }: StaffHeaderProps) {
   const [showSettings, setShowSettings] = useState(false);
   const [showSidebar, setShowSidebar] = useState(false);
 
+<<<<<<< HEAD
   const [staff, setStaff] = useState<StaffProfile | null>(null);
   const [staffName, setStaffName] = useState(
     initialName || "Staff Member"
@@ -93,6 +114,10 @@ export default function StaffHeader({
     if (initialRole) setStaffRole(initialRole);
   }, [initialName, initialRole]);
 
+=======
+  const navigate = useNavigate();
+
+>>>>>>> origin/main
   const formattedDate = new Date().toLocaleDateString("en-US", {
     weekday: "long",
     year: "numeric",
@@ -132,7 +157,10 @@ export default function StaffHeader({
         {/* Welcome and mobile menu */}
         <div className="flex min-w-0 items-center gap-4">
           <button
+<<<<<<< HEAD
             type="button"
+=======
+>>>>>>> origin/main
             onClick={() => setShowSidebar(true)}
             aria-label="Open menu"
             aria-expanded={showSidebar}
@@ -158,6 +186,7 @@ export default function StaffHeader({
           </div>
         </div>
 
+<<<<<<< HEAD
         {/* Staff information and header actions */}
         <div className="flex min-w-0 items-center gap-2 md:gap-4">
           {/* Staff details */}
@@ -183,6 +212,37 @@ export default function StaffHeader({
               <>
                 <button
                   type="button"
+=======
+        {/* Header actions */}
+        <div className="flex shrink-0 items-center gap-1 md:gap-2">
+          <button
+            aria-label="Download"
+            onClick={() => {
+              // Connect to a download action when required.
+            }}
+            className="cursor-pointer rounded-full p-2 text-white/70 transition-colors duration-200 hover:bg-white/10 hover:text-white"
+          >
+            <DownloadIcon size={20} strokeWidth={1.75} />
+          </button>
+
+          {/* Settings dropdown */}
+          <div className="relative">
+            <button
+              onClick={() =>
+                setShowSettings((previous) => !previous)
+              }
+              aria-label="Settings"
+              aria-expanded={showSettings}
+              className="cursor-pointer rounded-full p-2 text-white/70 transition-colors duration-200 hover:bg-white/10 hover:text-white"
+            >
+              <SettingsIcon size={20} strokeWidth={1.75} />
+            </button>
+
+            {showSettings && (
+              <>
+                {/* Close dropdown when clicking outside */}
+                <button
+>>>>>>> origin/main
                   aria-label="Close settings menu"
                   className="fixed inset-0 z-30 cursor-default"
                   onClick={() => setShowSettings(false)}
@@ -194,7 +254,10 @@ export default function StaffHeader({
 
                     return (
                       <button
+<<<<<<< HEAD
                         type="button"
+=======
+>>>>>>> origin/main
                         key={item.label}
                         onClick={() => {
                           setShowSettings(false);
@@ -210,6 +273,7 @@ export default function StaffHeader({
                       </button>
                     );
                   })}
+<<<<<<< HEAD
 
                   {onLogout && (
                     <button
@@ -223,6 +287,8 @@ export default function StaffHeader({
                       Log out
                     </button>
                   )}
+=======
+>>>>>>> origin/main
                 </div>
               </>
             )}
@@ -232,12 +298,19 @@ export default function StaffHeader({
           <div className="ml-1 hidden h-9 w-px bg-white/15 sm:block" />
 
           <button
+<<<<<<< HEAD
             type="button"
+=======
+>>>>>>> origin/main
             onClick={() => navigate("/staff/profile")}
             className="flex items-center gap-2 rounded-xl p-1.5 transition-colors hover:bg-white/10"
             aria-label="Open staff profile"
           >
+<<<<<<< HEAD
             <div className="flex h-9 w-9 shrink-0 items-center justify-center rounded-full bg-white/15 text-sm font-bold text-white">
+=======
+            <div className="flex h-9 w-9 items-center justify-center rounded-full bg-white/15 text-sm font-bold text-white">
+>>>>>>> origin/main
               {initials}
             </div>
 
@@ -258,7 +331,10 @@ export default function StaffHeader({
       {showSidebar && (
         <div className="fixed inset-0 z-50 flex lg:hidden">
           <button
+<<<<<<< HEAD
             type="button"
+=======
+>>>>>>> origin/main
             aria-label="Close navigation"
             onClick={() => setShowSidebar(false)}
             className="fixed inset-0 bg-black/40"

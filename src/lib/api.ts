@@ -1,6 +1,10 @@
 const BASE_URL =
+<<<<<<< HEAD
   import.meta.env.VITE_API_BASE_URL ||
   "https://edunova-backend-stn1.onrender.com/api/v1";
+=======
+import.meta.env.VITE_API_BASE_URL ||"https://edunova-backend-stn1.onrender.com/api/v1";
+>>>>>>> origin/main
 
 const TOKEN_KEY = "edunova_portal_token";
 const ROLE_KEY = "edunova_portal_role";
